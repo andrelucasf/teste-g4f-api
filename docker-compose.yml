@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Banco de Dados PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: noticias-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: noticias_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - noticias-network
+
+  # API NestJS
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: noticias-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: noticias_db
+      CACHE_TTL: 300
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - noticias-network
+    command: sh -c "npm run migration:run && npm run start:prod"
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  noticias-network:
+    driver: bridge
