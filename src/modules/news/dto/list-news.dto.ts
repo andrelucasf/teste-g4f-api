@@ -1,7 +1,7 @@
 import { IsOptional, IsInt, Min, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class ListNoticiasDto {
+export class ListNewsDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'A página deve ser um número inteiro' })

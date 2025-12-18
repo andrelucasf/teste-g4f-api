@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity('noticias')
-export class Noticia {
+export class News {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

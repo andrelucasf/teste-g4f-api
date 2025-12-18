@@ -1,4 +1,4 @@
-import { Noticia } from '../entities/noticia.entity';
+import { News } from '../entities/news.entity';
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -10,4 +10,4 @@ export interface PaginatedResponse<T> {
   };
 }
 
-export type PaginatedNoticias = PaginatedResponse<Noticia>;
+export type PaginatedNews = PaginatedResponse<News>;

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class CreateNoticiaDto {
+export class CreateNewsDto {
   @IsNotEmpty({ message: 'O título é obrigatório' })
   @IsString({ message: 'O título deve ser uma string' })
   @MinLength(5, { message: 'O título deve ter no mínimo 5 caracteres' })
