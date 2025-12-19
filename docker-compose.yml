@@ -11,11 +11,11 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: noticias_db
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,7 +30,7 @@ services:
     container_name: noticias-api
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       NODE_ENV: production
       PORT: 3000
@@ -45,7 +45,7 @@ services:
         condition: service_healthy
     networks:
       - noticias-network
-    command: sh -c "npm run migration:run && npm run start:prod"
+    command: node dist/src/main
 
 volumes:
   postgres_data:

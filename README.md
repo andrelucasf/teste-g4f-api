@@ -42,57 +42,68 @@ API RESTful completa para gerenciamento de notícias, desenvolvida com **NestJS*
 
 ### Arquitetura em Camadas
 
-O projeto segue os princípios de **Clean Architecture** e **SOLID**, dividido em camadas bem definidas:
+O projeto segue os princípios de **Clean Architecture** e **SOLID**, com separação clara entre infraestrutura e domínio:
 
 ```
 src/
 ├── main.ts                      # Ponto de entrada da aplicação
 ├── app.module.ts                # Módulo raiz
-├── modules/                     # Módulos da aplicação
-│   ├── database/                # Camada de Dados
-│   │   ├── database.module.ts   # Configuração do TypeORM
-│   │   ├── data-source.ts       # DataSource para migrations
-│   │   └── migrations/          # Migrations versionadas
-│   └── news/                    # Módulo de Notícias
-│       ├── entities/            # Entidades do banco (modelos)
-│       │   └── news.entity.ts
-│       ├── dto/                 # Data Transfer Objects (validação)
-│       │   ├── create-news.dto.ts
-│       │   ├── update-news.dto.ts
-│       │   └── list-news.dto.ts
-│       ├── interfaces/          # Contratos e tipos
-│       │   └── paginated-response.interface.ts
-│       ├── news.controller.ts   # Camada de Apresentação (rotas)
-│       ├── news.service.ts      # Camada de Negócio (lógica)
-│       └── news.module.ts       # Configuração do módulo
+│
+├── common/                      # Camada de Infraestrutura (transversal)
+│   └── database/                # Configuração de banco de dados
+│       ├── database.module.ts   # Configuração do TypeORM
+│       ├── data-source.ts       # DataSource para CLI de migrations
+│       └── migrations/          # Migrations versionadas
+│           └── 1734563000000-CreateNoticias.ts
+│
+└── modules/                     # Camada de Domínio (features)
+    └── news/                    # Módulo de Notícias
+        ├── entities/            # Entidades do banco (modelos)
+        │   └── news.entity.ts
+        ├── dto/                 # Data Transfer Objects (validação)
+        │   ├── create-news.dto.ts
+        │   ├── update-news.dto.ts
+        │   └── list-news.dto.ts
+        ├── interfaces/          # Contratos e tipos
+        │   └── paginated-response.interface.ts
+        ├── news.controller.ts   # Camada de Apresentação (rotas HTTP)
+        ├── news.service.ts      # Camada de Negócio (lógica)
+        └── news.module.ts       # Configuração do módulo
 ```
 
 ### Justificativa da Estrutura
 
-#### 1. **Separação de Responsabilidades**
+#### 1. **Separação Infraestrutura vs Domínio**
 
-- **Controllers**: Apenas recebem requisições e delegam para services
-- **Services**: Contêm toda a lógica de negócio
-- **Entities**: Definem o modelo de dados do banco
+- **`common/`**: Recursos compartilhados e configurações técnicas (database, guards, interceptors, pipes)
+- **`modules/`**: Features de negócio (news, users, orders, etc)
+- Facilita manutenção e escalabilidade
+- Segue o padrão oficial do NestJS
+
+#### 2. **Separação de Responsabilidades**
+
+- **Controllers**: Apenas recebem requisições HTTP e delegam para services
+- **Services**: Contêm toda a lógica de negócio e regras de domínio
+- **Entities**: Definem o modelo de dados do banco (TypeORM)
 - **DTOs**: Validam e transformam dados de entrada/saída
-- **Interfaces**: Contratos que garantem consistência
+- **Interfaces**: Contratos que garantem consistência de tipos
 
-#### 2. **Modularização**
+#### 3. **Modularização**
 
 Cada funcionalidade é um módulo independente que pode ser:
 
-- Testado isoladamente
+- Testado isoladamente com mocks
 - Reutilizado em outros projetos
 - Desenvolvido por equipes diferentes
-- Escalado horizontalmente
+- Escalado horizontalmente sem afetar outros módulos
 
-#### 3. **Injeção de Dependências**
+#### 4. **Injeção de Dependências**
 
 NestJS usa o padrão de IoC (Inversion of Control), facilitando:
 
-- Testes unitários com mocks
-- Substituição de implementações
+- Testes unitários com substituição de dependências
 - Baixo acoplamento entre módulos
+- Flexibilidade para trocar implementações (ex: trocar cache-manager por Redis)
 
 ---
 
@@ -113,10 +124,9 @@ NestJS usa o padrão de IoC (Inversion of Control), facilitando:
 - **class-validator** - Validação declarativa com decorators
 - **class-transformer** - Transformação de objetos
 
-### Cache e Fila
+### Cache
 
 - **cache-manager** - Sistema de cache em memória
-- **Fila Mock In-Memory** - Simulação de processamento assíncrono
 
 ### Testes
 
@@ -490,22 +500,8 @@ npm run migration:revert   # Reverte última migration
 
 ---
 
-## 👨‍💻 Autor
-
-**Andre Lucas**
-
----
-
 ## 📄 Licença
 
 Este projeto está sob a licença MIT.
 
 ---
-
-## 🙏 Agradecimentos
-
-Obrigado pela oportunidade de demonstrar minhas habilidades técnicas através deste teste!
-
----
-
-**Desenvolvido com ❤️ usando NestJS e TypeScript**

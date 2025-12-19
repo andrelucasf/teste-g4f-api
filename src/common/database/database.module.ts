@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { News } from '../news/entities/news.entity';
+import { News } from '../../modules/news/entities/news.entity';
 
 @Module({
   imports: [
@@ -16,7 +16,8 @@ import { News } from '../news/entities/news.entity';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [News],
-        migrations: ['dist/database/migrations/*.js'],
+        migrations: ['dist/src/common/database/migrations/*.js'],
+        migrationsRun: true,
         synchronize: false,
         logging: configService.get('NODE_ENV') === 'development',
       }),
